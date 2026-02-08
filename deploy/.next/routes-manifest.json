@@ -1,0 +1,259 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/legal/privacy",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/privacy(?:/)?$"
+    },
+    {
+      "source": "/terms-of-service",
+      "destination": "/legal/terms-of-service",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/terms-of-service(?:/)?$"
+    },
+    {
+      "source": "/cookie-policy",
+      "destination": "/legal/cookie-policy",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/cookie-policy(?:/)?$"
+    },
+    {
+      "source": "/disclaimer",
+      "destination": "/legal/disclaimer",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/disclaimer(?:/)?$"
+    },
+    {
+      "source": "/acceptable-use",
+      "destination": "/legal/acceptable-use",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/acceptable-use(?:/)?$"
+    },
+    {
+      "source": "/refunds",
+      "destination": "/legal/refunds",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/refunds(?:/)?$"
+    },
+    {
+      "source": "/subscription-hosting",
+      "destination": "/legal/subscription-hosting",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/subscription-hosting(?:/)?$"
+    },
+    {
+      "source": "/refer-earn",
+      "destination": "/legal/refer-earn",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/refer-earn(?:/)?$"
+    },
+    {
+      "source": "/dmca",
+      "destination": "/legal/dmca",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/dmca(?:/)?$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/resources/[slug]",
+      "regex": "^/resources/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/resources/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/work/[slug]",
+      "regex": "^/work/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/work/(?<nxtPslug>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/contact",
+      "regex": "^/api/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/contact(?:/)?$"
+    },
+    {
+      "page": "/contact",
+      "regex": "^/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/contact(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/legal/acceptable-use",
+      "regex": "^/legal/acceptable\\-use(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/legal/acceptable\\-use(?:/)?$"
+    },
+    {
+      "page": "/legal/cookie-policy",
+      "regex": "^/legal/cookie\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/legal/cookie\\-policy(?:/)?$"
+    },
+    {
+      "page": "/legal/privacy",
+      "regex": "^/legal/privacy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/legal/privacy(?:/)?$"
+    },
+    {
+      "page": "/legal/refer-earn",
+      "regex": "^/legal/refer\\-earn(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/legal/refer\\-earn(?:/)?$"
+    },
+    {
+      "page": "/legal/refunds",
+      "regex": "^/legal/refunds(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/legal/refunds(?:/)?$"
+    },
+    {
+      "page": "/legal/terms-of-service",
+      "regex": "^/legal/terms\\-of\\-service(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/legal/terms\\-of\\-service(?:/)?$"
+    },
+    {
+      "page": "/pricing",
+      "regex": "^/pricing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pricing(?:/)?$"
+    },
+    {
+      "page": "/pricing/estimate",
+      "regex": "^/pricing/estimate(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pricing/estimate(?:/)?$"
+    },
+    {
+      "page": "/resources",
+      "regex": "^/resources(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/resources(?:/)?$"
+    },
+    {
+      "page": "/robots.txt",
+      "regex": "^/robots\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/robots\\.txt(?:/)?$"
+    },
+    {
+      "page": "/services",
+      "regex": "^/services(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/services(?:/)?$"
+    },
+    {
+      "page": "/services/email",
+      "regex": "^/services/email(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/services/email(?:/)?$"
+    },
+    {
+      "page": "/services/graphic-design",
+      "regex": "^/services/graphic\\-design(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/services/graphic\\-design(?:/)?$"
+    },
+    {
+      "page": "/services/websites",
+      "regex": "^/services/websites(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/services/websites(?:/)?$"
+    },
+    {
+      "page": "/sitemap.xml",
+      "regex": "^/sitemap\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    },
+    {
+      "page": "/system/under-construction",
+      "regex": "^/system/under\\-construction(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/system/under\\-construction(?:/)?$"
+    },
+    {
+      "page": "/system/welcome",
+      "regex": "^/system/welcome(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/system/welcome(?:/)?$"
+    },
+    {
+      "page": "/work",
+      "regex": "^/work(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/work(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

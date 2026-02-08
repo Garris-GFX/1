@@ -1,0 +1,80 @@
+/* Tailwind input (generated from app/globals.css) */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme inline {
+  /* If you are using next font variables, map sans to it */
+  --font-sans: var(--font-inter);
+}
+
+@theme {
+  /* Colors */
+
+  /* Back-most app background (should visually match the full-bleed footer) */
+  --color-bg: #000000;
+  --color-bg-rgb: 0 0 0;
+
+  /* Centered page wrapper slab */
+  --color-page: #1e1e1e;
+  --color-page-rgb: 30 30 30;
+
+  /* Content surfaces (cards/panels inside the page wrapper) */
+  --color-surface: #2c2c2c;
+  --color-surface-rgb: 44 44 44;
+
+  --color-ui: #555555;
+  --color-ui-rgb: 85 85 85;
+  --color-muted: #878787;
+  --color-muted-rgb: 135 135 135;
+  --color-text: #b7b7b8;
+  --color-text-rgb: 183 183 184;
+
+  /* White / black RGB helpers */
+  --color-white: #ffffff;
+  --color-white-rgb: 255 255 255;
+  --color-black: #000000;
+  --color-black-rgb: 0 0 0;
+
+  /* Optional strokes */
+  --color-stroke: rgb(255 255 255 / 0.10);
+
+  /* Spacing tokens */
+  --spacing-tile: 24px;
+  --spacing-card: 24px;
+  --spacing-section: 48px;
+  --spacing-page: 144px;
+
+  /* Radii */
+  --radius-panel: 28px;
+  --radius-card: 22px;
+  --radius-tile: 0px;
+  --radius-pill: 9999px;
+
+  /* Type roles */
+  --text-crumbs: 14px;
+  --text-crumbs--line-height: 16px;
+
+  --text-small: 14px;
+  --text-small--line-height: 20px;
+
+  --text-body: 18px;
+  --text-body--line-height: 28px;
+
+  --text-h3: 20px;
+  --text-h3--line-height: 28px;
+
+  --text-h2: clamp(26px, 2.2vw, 36px);
+  --text-h2--line-height: 1.15;
+
+  --text-h1: clamp(40px, 3.6vw, 56px);
+  --text-h1--line-height: 1.05;
+
+  /* Letter spacing */
+  --tracking-crumbs: 0.14em;
+  --tracking-tightish: -0.02em;
+
+  /* Shadows (optional examples) */
+  --shadow-panel: 0 0 0 1px rgb(255 255 255 / 0.10);
+  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.08);
+  --shadow-tile: 0 0 0 1px rgb(255 255 255 / 0.06);
+}

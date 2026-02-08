@@ -1,0 +1,22 @@
+---
+title: Performance Optimizations for Small Sites
+date: "2025-01-18"
+excerpt: Practical performance improvements that give the biggest user-facing wins for small websites.
+tags:
+  - Performance
+  - Web
+thumbnail: "/work/whitmore/5.png"
+---
+
+Small sites don't need complex instrumentation to feel fast. Focus on the largest wins that are simple to implement.
+
+Priority list:
+
+1. Image sizing: serve appropriately sized images and use modern formats (AVIF/WebP where supported).
+2. Critical CSS: inline minimal critical styles for above-the-fold content.
+3. Limit third-party scripts: each adds latency and potential layout shift.
+4. Defer nonessential JS and hydrate interactive parts only when necessary.
+
+Tooling: Lighthouse for a quick audit; `next/image` or an image CDN to automate responsive images; `prefetch`/`preload` for critical assets.
+
+Measure before and after: pick a slow page, apply one change, and measure perceived speed improvements.
