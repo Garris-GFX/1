@@ -2,24 +2,13 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import * as React from "react";
-import { usePathname } from "next/navigation";
 import AnnouncementBar from "./AnnouncementBar";
 import SiteHeader from "./SiteHeader";
 import SiteFooter from "./SiteFooter";
-import FloatingLogo from "./FloatingLogo";
-
-/**
- * Fix for "frame moves up when bar disappears":
- * The issue was timing - `--railTop` was jumping instantly (40 -> 0) while the spacer/bar were animating,
- * so the knockout hole moved early. Here we animate `--railTop` in JS (rAF) over the same duration/ease
- * as the AnnouncementBar height transition. That keeps the frame + content + sticky header locked together.
- *
- * Visual styles unchanged.
- */
+import HomeScrollCta from "@/components/home/HomeScrollCta";
+import { usePathname } from "next/navigation";
 
 function cubicBezier(p1x: number, p1y: number, p2x: number, p2y: number) {
-  // Returns y for a given x in [0,1] for the cubic-bezier curve.
-  // Uses Newton-Raphson to invert x(t) = x, then compute y(t).
   const cx = 3 * p1x;
   const bx = 3 * (p2x - p1x) - cx;
   const ax = 1 - cx - bx;
@@ -42,9 +31,7 @@ function cubicBezier(p1x: number, p1y: number, p2x: number, p2y: number) {
     if (x <= 0) return 0;
     if (x >= 1) return 1;
 
-    // Initial guess
     let t = x;
-    // Newton-Raphson iterations
     for (let i = 0; i < 6; i++) {
       const xEst = sampleX(t) - x;
       const dEst = sampleDerivX(t);
@@ -61,16 +48,15 @@ function cubicBezier(p1x: number, p1y: number, p2x: number, p2y: number) {
 
 export default function LayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isHome = pathname === "/";
 
   const BASE_ANNOUNCE_H = 40;
   const frame = 8;
   const panelRadius = 28;
 
-  // Target from AnnouncementBar (0 or 40)
-  const [announceTarget, setAnnounceTarget] = React.useState<number>(BASE_ANNOUNCE_H);
+  const [announceTarget, setAnnounceTarget] = React.useState<number>(
+    BASE_ANNOUNCE_H
+  );
 
-  // Animated rail height used everywhere (frame hole, spacer, sticky header top)
   const [railTop, setRailTop] = React.useState<number>(BASE_ANNOUNCE_H);
   const railTopRef = React.useRef<number>(BASE_ANNOUNCE_H);
 
@@ -106,11 +92,11 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
     return () => cancelAnimationFrame(raf);
   }, [announceTarget, ease]);
 
-  const barInnerClass = isHome ? "w-full px-[var(--frame)]" : "mx-auto w-full px-4";
+  const barInnerClass = "mx-auto w-full px-4";
 
   return (
     <div
-      className="min-h-screen bg-bg text-text relative"
+      className="relative min-h-screen bg-bg text-text"
       style={
         {
           "--frame": `${frame}px`,
@@ -118,7 +104,6 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
         } as CSSProperties
       }
     >
-      {/* Fixed announcement bar (its own height animation stays in AnnouncementBar) */}
       <div className="fixed inset-x-0 top-0 z-[90] bg-bg">
         <AnnouncementBar
           innerClass={barInnerClass}
@@ -128,7 +113,6 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
         />
       </div>
 
-      {/* Knockout overlay: DO NOT transform this. Its hole tracks the animated --railTop. */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-x-0 top-0 bottom-[-2px] z-[60]"
@@ -154,29 +138,33 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
             </mask>
           </defs>
 
-          <rect x="0" y="0" width="100%" height="100%" fill="black" mask="url(#knockout-mask)" />
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="black"
+            mask="url(#knockout-mask)"
+          />
         </svg>
       </div>
 
-      {/* Spacer pushes the document down/up (sticky header works). No CSS transition needed now. */}
       <div aria-hidden="true" style={{ height: "var(--railTop)" }} />
 
-      {/* Page shell (normal flow) */}
       <div className="px-[var(--frame)] py-[var(--frame)]">
-        <div className="w-full rounded-panel bg-page shadow-panel">
+        <div className="w-full overflow-x-clip rounded-panel bg-page shadow-panel">
           <SiteHeader />
-          <main>{children}</main>
+
+          <main className="shell-main w-full">
+            {children}
+          </main>
         </div>
       </div>
 
-      {/* Footer above overlay */}
-      <div className="relative z-[70] bg-bg">
-        <SiteFooter constrain={!isHome} />
-      </div>
+      {pathname === "/" ? <HomeScrollCta /> : null}
 
-      {/* Floating logo bottom-right */}
-      <div className="relative z-[80]">
-        <FloatingLogo ariaHidden={false} />
+      <div className="relative z-[70] bg-bg">
+        <SiteFooter />
       </div>
     </div>
   );

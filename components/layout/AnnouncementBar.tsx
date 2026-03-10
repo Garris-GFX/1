@@ -2,36 +2,93 @@
 
 import * as React from "react";
 
-type Props = {
-  /** Inner layout class (controls constrained vs full-bleed padding) */
-  innerClass: string;
-  /** Current bar height in px (used for smooth collapse) */
-  height: number;
-  /** Base height when visible */
-  baseHeight?: number;
-  /** Called whenever the bar should change height */
-  onHeightChange: (next: number) => void;
-  /** Optional scroll container (if your page uses an inner scroll area) */
-  scrollEl?: HTMLElement | null;
-  /** If true, the bar reappears when scrolling up */
-  showOnScrollUp?: boolean;
-  /** Content */
-  text?: string;
-  ctaText?: string;
+type AlertItem = {
+  id: string;
+  label: string;
+  tone?: "amber" | "green" | "blue" | "red" | "neutral";
 };
+
+type Props = {
+  innerClass: string;
+  height: number;
+  baseHeight?: number;
+  expandedHeight?: number;
+  onHeightChange: (next: number) => void;
+  scrollEl?: HTMLElement | null;
+  showOnScrollUp?: boolean;
+  text?: string;
+  alerts?: AlertItem[];
+};
+
+function FooterArrowIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 12 12"
+      className={[
+        "h-3 w-3 shrink-0 transition-transform duration-200",
+        open ? "rotate-45" : "rotate-0",
+      ].join(" ")}
+      fill="none"
+    >
+      <path
+        d="M2.5 9.5L9.5 2.5M9.5 2.5H4.75M9.5 2.5V7.25"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function toneClasses(tone: AlertItem["tone"] = "neutral") {
+  switch (tone) {
+    case "amber":
+      return "bg-amber-400 shadow-[0_0_0_3px_rgba(251,191,36,0.18)]";
+    case "green":
+      return "bg-emerald-400 shadow-[0_0_0_3px_rgba(52,211,153,0.18)]";
+    case "blue":
+      return "bg-sky-400 shadow-[0_0_0_3px_rgba(56,189,248,0.18)]";
+    case "red":
+      return "bg-rose-400 shadow-[0_0_0_3px_rgba(251,113,133,0.18)]";
+    default:
+      return "bg-white/70 shadow-[0_0_0_3px_rgba(255,255,255,0.12)]";
+  }
+}
 
 export default function AnnouncementBar({
   innerClass,
   height,
   baseHeight = 40,
+  expandedHeight = 148,
   onHeightChange,
   scrollEl = null,
   showOnScrollUp = true,
   text = "Site under construction.",
-  ctaText = "Learn more →",
+  alerts = [
+    { id: "construction", label: "Site under construction", tone: "amber" },
+    { id: "content", label: "More pages and case studies coming soon", tone: "blue" },
+    { id: "booking", label: "Booking new projects", tone: "green" },
+  ],
 }: Props) {
+  const [open, setOpen] = React.useState(false);
   const lastY = React.useRef<number>(0);
   const lastApplied = React.useRef<number>(-1);
+
+  const apply = React.useCallback(
+    (next: number) => {
+      if (lastApplied.current !== next) {
+        lastApplied.current = next;
+        onHeightChange(next);
+      }
+    },
+    [onHeightChange]
+  );
+
+  React.useEffect(() => {
+    apply(open ? expandedHeight : baseHeight);
+  }, [apply, baseHeight, expandedHeight, open]);
 
   React.useEffect(() => {
     const getY = () => {
@@ -39,55 +96,42 @@ export default function AnnouncementBar({
       return window.scrollY || document.documentElement.scrollTop || 0;
     };
 
-    // Hysteresis to prevent flicker
-    const DOWN_HIDE_DELTA = 6;   // px moved down before we hide
-    const UP_SHOW_DELTA = 12;    // px moved up before we show (if enabled)
-
-    const apply = (next: number) => {
-      if (lastApplied.current !== next) {
-        lastApplied.current = next;
-        onHeightChange(next);
-      }
-    };
+    const DOWN_HIDE_DELTA = 6;
+    const UP_SHOW_DELTA = 12;
 
     const update = () => {
       const y = getY();
       const prev = lastY.current;
       lastY.current = y;
 
-      // Always show at the very top
       if (y <= 0) {
-        apply(baseHeight);
+        apply(open ? expandedHeight : baseHeight);
         return;
       }
 
       const dy = y - prev;
 
-      // Scrolling down: hide
       if (dy > DOWN_HIDE_DELTA) {
         apply(0);
         return;
       }
 
-      // Scrolling up: show (optional)
       if (showOnScrollUp && dy < -UP_SHOW_DELTA) {
-        apply(baseHeight);
-        return;
+        apply(open ? expandedHeight : baseHeight);
       }
-
-      // Otherwise keep whatever state we're in (no-op)
     };
 
-    // Initialize
     lastY.current = getY();
     update();
 
     const opts: AddEventListenerOptions = { passive: true };
+
     if (scrollEl) {
       scrollEl.addEventListener("scroll", update, opts);
     } else {
       window.addEventListener("scroll", update, opts);
     }
+
     window.addEventListener("resize", update);
 
     return () => {
@@ -98,9 +142,15 @@ export default function AnnouncementBar({
       }
       window.removeEventListener("resize", update);
     };
-  }, [baseHeight, onHeightChange, scrollEl, showOnScrollUp]);
+  }, [apply, baseHeight, expandedHeight, open, scrollEl, showOnScrollUp]);
 
   const isHidden = height <= 0;
+  const primaryAlert = alerts[0] ?? {
+    id: "construction",
+    label: text,
+    tone: "amber" as const,
+  };
+  const drawerAlerts = alerts.slice(1);
 
   return (
     <div
@@ -114,20 +164,58 @@ export default function AnnouncementBar({
       <div
         className={[
           innerClass,
-          "flex h-full items-center justify-between text-crumbs uppercase tracking-crumbs",
+          "flex h-full flex-col justify-start overflow-hidden text-crumbs uppercase tracking-crumbs",
           "transition-[opacity,transform] duration-[220ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]",
           isHidden ? "pointer-events-none opacity-0 -translate-y-1" : "opacity-100 translate-y-0",
         ].join(" ")}
       >
-        <div className="flex items-center gap-4 text-text/80">
-          <span
-            aria-hidden="true"
-            className="h-2.5 w-2.5 rounded-full bg-amber-400 shadow-[0_0_0_3px_rgba(251,191,36,0.18)]"
-          />
-          <span>{text}</span>
+        <div className="flex h-10 items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-4 text-text/80">
+            <span
+              aria-hidden="true"
+              className={[
+                "h-2.5 w-2.5 shrink-0 rounded-full",
+                toneClasses(primaryAlert.tone),
+              ].join(" ")}
+            />
+            <span className="truncate">{text}</span>
+          </div>
+
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-label={open ? "Collapse alerts" : "Expand alerts"}
+            onClick={() => setOpen((prev) => !prev)}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center text-text/70 transition-colors hover:text-text"
+          >
+            <FooterArrowIcon open={open} />
+          </button>
         </div>
 
-        <span className="hidden sm:inline text-text/70">{ctaText}</span>
+        <div
+          className={[
+            "overflow-hidden border-t transition-[max-height,opacity,padding,border-color] duration-[220ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]",
+            open ? "max-h-40 border-white/10 pt-3 opacity-100" : "max-h-0 border-transparent pt-0 opacity-0",
+          ].join(" ")}
+        >
+          <div className="flex flex-col gap-3 pb-3">
+            {drawerAlerts.map((alert) => (
+              <div
+                key={alert.id}
+                className="flex items-center gap-3 text-[11px] uppercase tracking-crumbs text-text/65"
+              >
+                <span
+                  aria-hidden="true"
+                  className={[
+                    "h-2.5 w-2.5 shrink-0 rounded-full",
+                    toneClasses(alert.tone),
+                  ].join(" ")}
+                />
+                <span>{alert.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

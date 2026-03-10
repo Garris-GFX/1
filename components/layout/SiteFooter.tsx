@@ -35,6 +35,25 @@ function GarrisFooterWordmark({ className }: { className?: string }) {
   );
 }
 
+function FooterArrowIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="M4 12L12 4M6 4h6v6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 const FOOTER_LINKS: Array<{
   title: string;
   links: Array<{ label: string; href: string }>;
@@ -53,8 +72,6 @@ const FOOTER_LINKS: Array<{
       { label: "Website services", href: "/services/websites" },
       { label: "Design services", href: "/services/graphic-design" },
       { label: "Email services", href: "/services/email" },
-      { label: "Hosting & Maintenance", href: "/services/hosting-maintenance" },
-      { label: "Support", href: "/services/support" },
     ],
   },
   {
@@ -64,58 +81,134 @@ const FOOTER_LINKS: Array<{
       { label: "Create an estimate", href: "/pricing/estimate" },
     ],
   },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", href: "/legal/privacy" },
-      { label: "Cookies", href: "/legal/cookie-policy" },
-      { label: "Refer & Earn", href: "/legal/refer-earn" },
-      { label: "Refunds", href: "/legal/refunds" },
-      { label: "Terms of Service", href: "/legal/terms-of-service" },
-      { label: "Acceptable Use", href: "/legal/acceptable-use" },
-    ],
-  },
 ];
 
+function FooterColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: Array<{ label: string; href: string }>;
+}) {
+  return (
+    <nav aria-label={title}>
+      <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">
+        {title}
+      </h3>
+      <ul className="mt-4 space-y-1">
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link
+              href={link.href}
+              className="inline-flex min-h-10 items-center py-1 text-[15px] leading-6 text-text/80 transition-colors hover:text-white"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
 export default function SiteFooter({ constrain = true }: { constrain?: boolean }) {
-  // Constrained = inside-page layout (max-width). Unconstrained = homepage/full-bleed but framed.
-  const innerClass = constrain ? "mx-auto w-full max-w-[1200px] px-4" : "w-full px-[var(--frame)]";
+  const innerClass = constrain
+    ? "mx-auto w-full max-w-[1200px] px-4"
+    : "w-full px-[var(--frame)]";
 
   return (
-    // NOTE: Don't stack mt-section + py-section (96 + 96). We only keep the internal spacing.
-    <footer className=" bg-bg">
-      <div className={`${innerClass} py-section`}>
-        {/* Links: 2x2 on mobile/tablet, 4 cols on desktop */}
-        <div className="grid grid-cols-2 gap-card text-left md:grid-cols-2 lg:grid-cols-4 lg:justify-items-center">
-          {FOOTER_LINKS.map((col) => (
-            <nav key={col.title} className="space-y-3">
-              <h3 className="text-crumbs uppercase tracking-crumbs text-muted">{col.title}</h3>
-              <ul className="space-y-3">
-                {col.links.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} className="text-body text-text/90 transition hover:text-white">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
-        </div>
+    <footer className="bg-bg">
+      <div className={innerClass}>
+        <div className="py-12 sm:py-14 lg:py-16">
+          {/* Mobile */}
+          <div className="lg:hidden">
+            <div className="flex flex-col">
+              <Link href="/" className="inline-flex w-fit">
+                <GarrisFooterWordmark className="h-8 w-auto text-white" />
+              </Link>
 
-        {/* Lower footer: centered "Powered by" + wordmark */}
-        <div className="mt-section border-t border-white/10 pt-card">
-          <a
-            href="https://garris.graphics"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex w-full items-center justify-center gap-3 text-small"
-          >
-            <span className="uppercase tracking-crumbs text-muted transition-colors group-hover:text-white">
-              Powered by
-            </span>
-            <GarrisFooterWordmark className="h-8 w-auto text-muted opacity-90 transition-[color,opacity] group-hover:text-white group-hover:opacity-100" />
-          </a>
+              <p className="mt-5 max-w-[32rem] text-[15px] leading-7 text-text/74">
+                Design, websites, email, hosting, and support - built to keep the work clear and easy to manage.
+              </p>
+
+              <div className="mt-7 flex flex-col divide-y divide-white/10 border-y border-white/10">
+                <Link
+                  href="/contact"
+                  className="inline-flex min-h-12 items-center justify-between py-3 text-[15px] leading-6 text-white transition-colors hover:text-text/80"
+                >
+                  <span>Start a project</span>
+                  <FooterArrowIcon className="h-4 w-4 text-muted" />
+                </Link>
+                <Link
+                  href="/pricing/estimate"
+                  className="inline-flex min-h-12 items-center justify-between py-3 text-[15px] leading-6 text-text/80 transition-colors hover:text-white"
+                >
+                  <span>Create an estimate</span>
+                  <FooterArrowIcon className="h-4 w-4 text-muted" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-10 space-y-10">
+              {FOOTER_LINKS.map((col) => (
+                <FooterColumn key={col.title} title={col.title} links={col.links} />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop */}
+          <div className="hidden lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16">
+            <div className="flex flex-col">
+              <Link href="/" className="inline-flex w-fit">
+                <GarrisFooterWordmark className="h-9 w-auto text-white" />
+              </Link>
+
+              <p className="mt-5 max-w-[34rem] text-[15px] leading-7 text-text/74">
+                Design, websites, email, hosting, and support - built to keep the work clear and easy to manage.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2">
+                <Link
+                  href="/contact"
+                  className="inline-flex min-h-10 items-center gap-2 py-1 text-[15px] leading-6 text-white transition-colors hover:text-text/80"
+                >
+                  <span>Start a project</span>
+                  <FooterArrowIcon className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/pricing/estimate"
+                  className="inline-flex min-h-10 items-center gap-2 py-1 text-[15px] leading-6 text-text/80 transition-colors hover:text-white"
+                >
+                  <span>Create an estimate</span>
+                  <FooterArrowIcon className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-x-8">
+              {FOOTER_LINKS.map((col) => (
+                <FooterColumn key={col.title} title={col.title} links={col.links} />
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-12 border-t border-white/10 pt-5 sm:mt-14">
+            <div className="flex flex-col gap-3 text-[13px] leading-6 text-muted sm:flex-row sm:items-center sm:justify-between">
+              <p>© {new Date().getFullYear()} Garris Graphics</p>
+
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+                <Link href="/legal/privacy" className="transition-colors hover:text-white">
+                  Privacy
+                </Link>
+                <Link href="/legal/terms-of-service" className="transition-colors hover:text-white">
+                  Terms
+                </Link>
+                <Link href="/contact" className="transition-colors hover:text-white">
+                  Contact
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

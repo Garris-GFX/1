@@ -1,5 +1,6 @@
-// ToolIcons.tsx
 // components/ToolIcons.tsx
+"use client";
+
 import {
   SiAdobeillustrator,
   SiAdobephotoshop,
@@ -9,7 +10,16 @@ import {
   SiFigma,
   SiNextdotjs,
   SiTailwindcss,
+  SiVercel,
+  SiTypescript,
+  SiGithub,
+  SiSlack,
+  SiNotion,
+  SiLinear,
+  SiGoogleanalytics,
+  SiGooglesearchconsole,
   // socials
+  SiInstagram,
   SiFacebook,
   SiLinkedin,
   SiBehance,
@@ -26,66 +36,183 @@ function normalize(input?: unknown): string[] {
     .filter(Boolean);
 }
 
+type Variant = "row" | "tiles";
+
 type Props = {
   tools?: unknown; // accepts string | string[]
-  size?: number; // optional icon size (px)
+  size?: number; // icon size (px)
   className?: string;
+
+  variant?: Variant; // "row" (default) or "tiles"
+  tileSize?: number; // tile height (px)
+  tileRadiusClass?: string;
+  tileClassName?: string;
+  useBrandColors?: boolean;
+
+  // NEW
+  showLabels?: boolean; // default true for tiles
+  labelClassName?: string;
 };
 
-export default function ToolIcons({ tools, size = 22, className }: Props) {
+type IconDef = {
+  Icon: React.ComponentType<{ size?: number; color?: string }>;
+  color?: string; // hex
+  label: string;
+};
+
+const ICONS: Record<string, IconDef> = {
+  // --- design/dev tools ---
+  illustrator: { Icon: SiAdobeillustrator, color: "#FF9A00", label: "Illustrator" },
+  ai: { Icon: SiAdobeillustrator, color: "#FF9A00", label: "Illustrator" },
+  "adobe illustrator": { Icon: SiAdobeillustrator, color: "#FF9A00", label: "Illustrator" },
+
+  photoshop: { Icon: SiAdobephotoshop, color: "#31A8FF", label: "Photoshop" },
+  ps: { Icon: SiAdobephotoshop, color: "#31A8FF", label: "Photoshop" },
+  "adobe photoshop": { Icon: SiAdobephotoshop, color: "#31A8FF", label: "Photoshop" },
+
+  indesign: { Icon: SiAdobeindesign, color: "#FF3366", label: "InDesign" },
+  id: { Icon: SiAdobeindesign, color: "#FF3366", label: "InDesign" },
+  "adobe indesign": { Icon: SiAdobeindesign, color: "#FF3366", label: "InDesign" },
+
+  "after effects": { Icon: SiAdobeaftereffects, color: "#9999FF", label: "After Effects" },
+  ae: { Icon: SiAdobeaftereffects, color: "#9999FF", label: "After Effects" },
+  "adobe after effects": { Icon: SiAdobeaftereffects, color: "#9999FF", label: "After Effects" },
+
+  premiere: { Icon: SiAdobepremierepro, color: "#9999FF", label: "Premiere" },
+  pr: { Icon: SiAdobepremierepro, color: "#9999FF", label: "Premiere" },
+  "adobe premiere": { Icon: SiAdobepremierepro, color: "#9999FF", label: "Premiere" },
+  "adobe premiere pro": { Icon: SiAdobepremierepro, color: "#9999FF", label: "Premiere Pro" },
+
+  figma: { Icon: SiFigma, color: "#F24E1E", label: "Figma" },
+
+  next: { Icon: SiNextdotjs, color: "#FFFFFF", label: "Next.js" },
+  nextjs: { Icon: SiNextdotjs, color: "#FFFFFF", label: "Next.js" },
+  "next.js": { Icon: SiNextdotjs, color: "#FFFFFF", label: "Next.js" },
+
+  tailwind: { Icon: SiTailwindcss, color: "#06B6D4", label: "Tailwind" },
+  tailwindcss: { Icon: SiTailwindcss, color: "#06B6D4", label: "Tailwind" },
+
+  vercel: { Icon: SiVercel, color: "#FFFFFF", label: "Vercel" },
+
+  typescript: { Icon: SiTypescript, color: "#3178C6", label: "TypeScript" },
+  ts: { Icon: SiTypescript, color: "#3178C6", label: "TypeScript" },
+
+  github: { Icon: SiGithub, color: "#FFFFFF", label: "GitHub" },
+
+  slack: { Icon: SiSlack, color: "#4A154B", label: "Slack" },
+
+  notion: { Icon: SiNotion, color: "#FFFFFF", label: "Notion" },
+
+  linear: { Icon: SiLinear, color: "#5E6AD2", label: "Linear" },
+
+  "google analytics": { Icon: SiGoogleanalytics, color: "#E37400", label: "GA4" },
+  ga4: { Icon: SiGoogleanalytics, color: "#E37400", label: "GA4" },
+  analytics: { Icon: SiGoogleanalytics, color: "#E37400", label: "Analytics" },
+
+  "search console": { Icon: SiGooglesearchconsole, color: "#458CF5", label: "Search Console" },
+  gsc: { Icon: SiGooglesearchconsole, color: "#458CF5", label: "Search Console" },
+  "google search console": { Icon: SiGooglesearchconsole, color: "#458CF5", label: "Search Console" },
+
+  // --- socials ---
+  facebook: { Icon: SiFacebook, color: "#1877F2", label: "Facebook" },
+  fb: { Icon: SiFacebook, color: "#1877F2", label: "Facebook" },
+
+  linkedin: { Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn" },
+  "linked-in": { Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn" },
+
+  behance: { Icon: SiBehance, color: "#1769FF", label: "Behance" },
+  "béhance": { Icon: SiBehance, color: "#1769FF", label: "Behance" },
+
+  x: { Icon: SiX, color: "#FFFFFF", label: "X" },
+  twitter: { Icon: SiX, color: "#FFFFFF", label: "X" },
+
+  tiktok: { Icon: SiTiktok, color: "#FFFFFF", label: "TikTok" },
+  "tik-tok": { Icon: SiTiktok, color: "#FFFFFF", label: "TikTok" },
+
+  instagram: { Icon: SiInstagram, color: "#FFFFFF", label: "Instagram" },
+  "Instagram": { Icon: SiInstagram, color: "#FFFFFF", label: "Instagram" },
+
+};
+
+export default function ToolIcons({
+  tools,
+  size = 22,
+  className,
+  variant = "row",
+  tileSize = 38,
+  tileRadiusClass = "rounded-pill",
+  tileClassName,
+  useBrandColors,
+  showLabels,
+  labelClassName,
+}: Props) {
   const list = normalize(tools);
   if (!list.length) return null;
 
-  const icons = list
-    .map((nameRaw, idx) => {
-      const name = String(nameRaw).toLowerCase();
+  const defs = list
+    .map((raw) => String(raw).toLowerCase())
+    .map((name) => ICONS[name] ?? null)
+    .filter(Boolean) as IconDef[];
 
-      // --- design/dev tools ---
-      if (["illustrator", "ai", "adobe illustrator"].includes(name))
-        return <SiAdobeillustrator key={`${name}-${idx}`} size={size} />;
-      if (["photoshop", "ps", "adobe photoshop"].includes(name))
-        return <SiAdobephotoshop key={`${name}-${idx}`} size={size} />;
-      if (["indesign", "id", "adobe indesign"].includes(name))
-        return <SiAdobeindesign key={`${name}-${idx}`} size={size} />;
-      if (["after effects", "ae", "adobe after effects"].includes(name))
-        return <SiAdobeaftereffects key={`${name}-${idx}`} size={size} />;
-      if (["premiere", "pr", "adobe premiere"].includes(name))
-        return <SiAdobepremierepro key={`${name}-${idx}`} size={size} />;
-      if (["figma"].includes(name))
-        return <SiFigma key={`${name}-${idx}`} size={size} />;
-      if (["next", "nextjs", "next.js"].includes(name))
-        return <SiNextdotjs key={`${name}-${idx}`} size={size} />;
-      if (["tailwind", "tailwindcss"].includes(name))
-        return <SiTailwindcss key={`${name}-${idx}`} size={size} />;
+  if (!defs.length) return null;
 
-      // --- socials ---
-      if (["facebook", "fb"].includes(name))
-        return <SiFacebook key={`${name}-${idx}`} size={size} />;
-      if (["linkedin", "linked-in"].includes(name))
-        return <SiLinkedin key={`${name}-${idx}`} size={size} />;
-      if (["behance", "béhance"].includes(name))
-        return <SiBehance key={`${name}-${idx}`} size={size} />;
-      if (["x", "twitter"].includes(name))
-        return <SiX key={`${name}-${idx}`} size={size} />;
-      if (["tiktok", "tik-tok"].includes(name))
-        return <SiTiktok key={`${name}-${idx}`} size={size} />;
+  const shouldUseBrandColors =
+    typeof useBrandColors === "boolean"
+      ? useBrandColors
+      : variant === "tiles";
 
-      return null;
-    })
-    .filter(Boolean);
+  const shouldShowLabels =
+    typeof showLabels === "boolean" ? showLabels : variant === "tiles";
 
-  if (!icons.length) return null;
-
-  // default to white icons unless overridden
-  const wrapperClass = ["flex items-center gap-3", className || "text-white/80"]
+  const wrapperClass = ["flex items-center gap-3", className || ""]
     .filter(Boolean)
     .join(" ");
 
+  if (variant === "tiles") {
+    return (
+      <div className={wrapperClass}>
+        {defs.map(({ Icon, color, label }, i) => (
+          <span
+            key={i}
+            className={[
+              "inline-flex items-center gap-2 px-3",
+              "border border-white/15 bg-white/[0.04]",
+              "text-small text-text/90",
+              tileRadiusClass,
+              tileClassName,
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            style={{ height: tileSize }}
+          >
+            <Icon
+              size={Math.min(size, 20)}
+              color={shouldUseBrandColors ? color : undefined}
+            />
+            {shouldShowLabels && (
+              <span
+                className={[
+                  "whitespace-nowrap text-[12px] leading-none",
+                  labelClassName || "text-text/85",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {label}
+              </span>
+            )}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  // variant === "row"
   return (
-    <div className={wrapperClass}>
-      {icons.map((icon, i) => (
+    <div className={["flex items-center gap-3", className || "text-white/80"].join(" ")}>
+      {defs.map(({ Icon, color }, i) => (
         <span key={i} className="leading-none">
-          {icon}
+          <Icon size={size} color={shouldUseBrandColors ? color : undefined} />
         </span>
       ))}
     </div>

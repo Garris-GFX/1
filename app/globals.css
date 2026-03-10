@@ -75,6 +75,16 @@
 
   /* Shadows (optional examples) */
   --shadow-panel: 0 0 0 1px rgb(255 255 255 / 0.10);
-  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.08);
+  --shadow-card: 0 0 0 0px rgb(255 255 255 / 0.08);
   --shadow-tile: 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+
+.shell-main > * {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.shell-main > [data-full-bleed] {
+  max-width: none;
 }
