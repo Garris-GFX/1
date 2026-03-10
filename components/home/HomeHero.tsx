@@ -198,10 +198,11 @@ export default function HomeHero() {
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
+            poster="/hero-poster.jpg"
             className="h-full w-full object-cover"
           >
-            <source src="/video1.mp4" type="video/mp4" />
+            <source src="/video1-web.mp4" type="video/mp4" />
           </video>
         </div>
 
