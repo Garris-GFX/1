@@ -201,7 +201,7 @@ export default function HomeHero() {
             preload="metadata"
             className="h-full w-full object-cover"
           >
-            <source src="/Video1.mp4" type="video/mp4" />
+            <source src="/video1.mp4" type="video/mp4" />
           </video>
         </div>
 
